@@ -3,14 +3,14 @@ var widthSlider = document.querySelector('#widthSlider');
 var colorInput = document.querySelector('#colorPicker');
 
 var firebaseConfig = {
-  apiKey: "AIzaSyCntsGwcx23zoQxFXgkxj76-8xgwGM8nJg",
-  authDomain: "drawing-test-fc89d.firebaseapp.com",
-  databaseURL: "https://drawing-test-fc89d-default-rtdb.firebaseio.com",
-  projectId: "drawing-test-fc89d",
-  storageBucket: "drawing-test-fc89d.appspot.com",
-  messagingSenderId: "622905699981",
-  appId: "1:622905699981:web:385b2f7d00185f7a25bcc4",
-  measurementId: "G-V2NTMLZJW9"
+    apiKey: "AIzaSyCntsGwcx23zoQxFXgkxj76-8xgwGM8nJg",
+    authDomain: "drawing-test-fc89d.firebaseapp.com",
+    databaseURL: "https://drawing-test-fc89d-default-rtdb.firebaseio.com",
+    projectId: "drawing-test-fc89d",
+    storageBucket: "drawing-test-fc89d.appspot.com",
+    messagingSenderId: "622905699981",
+    appId: "1:622905699981:web:385b2f7d00185f7a25bcc4",
+    measurementId: "G-V2NTMLZJW9"
 };
 firebase.initializeApp(firebaseConfig);
 

@@ -119,7 +119,7 @@ def add():
     db.collection('chats').document(
         datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")).set(chat_data)
 
-    return redirect("/")
+    return redirect("/Therapist")
 
 
 # Journal Routes
@@ -137,6 +137,13 @@ def journal():
     page = page.replace("{header}", header)
     page = page.replace("{footer}", footer)
 
+    return page
+
+# Piano Routes
+@app.route('/Music')
+def Piano():
+    with open("template/piano/piano.html", "r") as f:
+        page = f.read()
     return page
 
 
@@ -174,7 +181,7 @@ def submit():
 @app.route('/past')
 def past_entries():
     entries_ref = db.collection('journal').order_by(
-        'timestamp', direction=firestore.Query.DESCENDING)
+        'timestamp', direction=db.Query.DESCENDING)
     docs = entries_ref.stream()
     entries = [doc.to_dict() for doc in docs]
     return render_template('journal/past_entries.html', entries=entries)
