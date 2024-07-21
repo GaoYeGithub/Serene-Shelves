@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, send_file
 import datetime, os
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -122,22 +122,53 @@ def add():
     return redirect("/Therapist")
 
 
-# Journal Routes
-@app.route('/Journal')
-def journal():
-    with open("template/journal/home_entries.html", "r") as f:
-        page = f.read()
+# Journal Routes #WORKING
 
-    with open("template/Components/header.html", "r") as f:
-        header = f.read()
+@app.route('/past')
+def past_entries():
+    entries_ref = db.collection('journal').order_by(
+        'timestamp', direction=firestore.Query.DESCENDING)
+    docs = entries_ref.stream()
+    entries = [doc.to_dict() for doc in docs]
 
-    with open("template/Components/footer.html", "r") as f:
-        footer = f.read()
+    # Read the HTML file content
+    with open('templates/journal/past_entries.html', 'r') as file:
+        html_content = file.read()
 
-    page = page.replace("{header}", header)
-    page = page.replace("{footer}", footer)
+    # Inject the entries data into the HTML content
+    entries_html = ''.join([f"<div><h2>{entry['title']}</h2><p>{entry['content']}</p></div>" for entry in entries])
+    html_content = html_content.replace('{{ entries }}', entries_html)
 
-    return page
+    # Save the modified HTML content to a temporary file
+    temp_file_path = 'temp/past_entries.html'
+    os.makedirs(os.path.dirname(temp_file_path), exist_ok=True)
+    with open(temp_file_path, 'w') as temp_file:
+        temp_file.write(html_content)
+
+    # Send the modified HTML file
+    return send_file(temp_file_path)
+
+@app.route('/entry/<entry_id>')
+def entry(entry_id):
+    entry_ref = db.collection('journal').document(entry_id)
+    entry = entry_ref.get().to_dict()
+
+    # Read the HTML file content
+    with open('templates/entry.html', 'r') as file:
+        html_content = file.read()
+
+    # Inject the entry data into the HTML content
+    html_content = html_content.replace('{{ entry.title }}', entry['title'])
+    html_content = html_content.replace('{{ entry.content }}', entry['content'])
+
+    # Save the modified HTML content to a temporary file
+    temp_file_path = f'temp/entry_{entry_id}.html'
+    os.makedirs(os.path.dirname(temp_file_path), exist_ok=True)
+    with open(temp_file_path, 'w') as temp_file:
+        temp_file.write(html_content)
+
+    # Send the modified HTML file
+    return send_file(temp_file_path)
 
 # Piano Routes
 @app.route('/Music')
@@ -147,51 +178,8 @@ def Piano():
     return page
 
 
-@app.route('/new_entry')
-def new_entry():
-    with open("template/journal/new_entry.html", "r") as f:
-        page = f.read()
-
-    with open("template/Components/header.html", "r") as f:
-        header = f.read()
-
-    with open("template/Components/footer.html", "r") as f:
-        footer = f.read()
-
-    page = page.replace("{header}", header)
-    page = page.replace("{footer}", footer)
-
-    return page
 
 
-@app.route('/submit', methods=['POST'])
-def submit():
-    title = request.form['title']
-    content = request.form['content']
-    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    entry_data = {
-        'title': title,
-        'content': content,
-        'timestamp': timestamp
-    }
-    db.collection('journal').document(timestamp).set(entry_data)
-    return redirect("/Journal")
-
-
-@app.route('/past')
-def past_entries():
-    entries_ref = db.collection('journal').order_by(
-        'timestamp', direction=db.Query.DESCENDING)
-    docs = entries_ref.stream()
-    entries = [doc.to_dict() for doc in docs]
-    return render_template('journal/past_entries.html', entries=entries)
-
-
-@app.route('/entry/<entry_id>')
-def entry(entry_id):
-    entry_ref = db.collection('journal').document(entry_id)
-    entry = entry_ref.get().to_dict()
-    return render_template('entry.html', entry=entry)
 
 if __name__ == '__main__':
     logging.info('Starting Flask app...')

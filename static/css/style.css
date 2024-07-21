@@ -162,3 +162,18 @@ a:hover {
   width: 100%;
   height: calc(100% - 0px);
 }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+#controls {
+  margin-bottom: 20px;
+}
+
+canvas {
+  border: 1px solid #ccc;
+}
