@@ -1,3 +1,6 @@
+Run in replit using command python app.py
+
+
 # Serene Shelves
 ## Unwind with Serene Shelves: Explore a 3D room, chat with an AI therapist, journal your thoughts, draw collaboratively, and relax in the music room. Your all-in-one space for mental wellness.
 
