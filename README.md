@@ -1,4 +1,7 @@
 Run in replit using command python app.py
+Or run in termial
+npm i
+python app.py
 
 
 # Serene Shelves
