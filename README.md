@@ -1,6 +1,6 @@
 Run in replit using command python app.py
 Or run in termial
-npm i
+pip install poetry.lock
 python app.py
 
 
